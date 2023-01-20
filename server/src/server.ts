@@ -1,9 +1,9 @@
 import cors from "@fastify/cors";
-import { PrismaClient } from "@prisma/client";
 import Fastify from "fastify";
+import { prisma } from "./lib/prisma";
+import { appRoutes } from "./lib/routes";
 
 const app = Fastify();
-const prisma = new PrismaClient();
 
 //Define quais aplicações poderão consumir os dados dessa api. Podemos definir a url do
 //frontend por exemplo http://localhost:8080
@@ -12,10 +12,9 @@ app.register(cors, {
     //configurações de acesso a api
 });
 
-app.get("/", async () => {
-    const habits = await prisma.habit.findMany();
-    return habits;
-});
+//appRoutes é a função que está sendo exportada no arquivo Routes.ts com as rotas
+//que irá consumir a API (arquivo roteador)
+app.register(appRoutes);
 
 app.listen({
     port: 3333,
